@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<web-app 
+  xmlns="http://java.sun.com/xml/ns/j2ee" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+  version="2.4">
+
+  <servlet>
+    <servlet-name>WSProjServlet</servlet-name>
+    <servlet-class>wsproj.servlet.WSProjServlet</servlet-class>
+    <init-param>
+      <param-name>scriptPath</param-name>
+      <param-value>/WEB-INF/ts/wsproj-server.js</param-value>
+    </init-param>
+    <init-param>
+      <param-name>entryPoint</param-name>
+      <param-value>wsproj.server.service</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>WSProjServlet</servlet-name>
+    <url-pattern>/wsws</url-pattern>
+  </servlet-mapping>
+
+  <listener>
+    <listener-class>ws.WSServletContextListener</listener-class>
+  </listener>
+  <context-param>
+    <param-name>ws.config</param-name>
+    <param-value>
+    {
+      "endpoints": [
+        {
+          "path": "/ws/wsproj",
+          "scriptPath": "/WEB-INF/ts/wsproj-server.js",
+          "factory": "wsproj.server.create()"
+        },
+      ]
+    }
+    </param-value>
+  </context-param>
+
+</web-app>

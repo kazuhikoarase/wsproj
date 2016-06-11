@@ -1,0 +1,75 @@
+{
+  "OK": "OK",
+  "CANCEL": "キャンセル",
+  "ADD_COMMENT": "コメントの挿入",
+  "EDIT_COMMENT": "コメントの編集",
+  "DEL_COMMENT": "コメントの削除",
+  "ADD_ROW": "行追加",
+  "DUP_ROW": "行複製",
+  "DEL_ROW": "行削除",
+  "CLEAR_FILTER": "フィルターと並べ替えをクリア",
+  "APPLY_DEFAULT_FILTER": "既定のフィルターと並べ替えを適用",
+  "MINIMIZE_ALL_COLUMNS": "全ての列幅を最小化",
+  "RESTORE_ALL_COLUMNS": "全ての列幅を元に戻す",
+  "SELECT_ALL": "(すべて選択)",
+  "EMPTY_CELL": "(空白のセル)",
+  "SORT_ASC": "昇順",
+  "SORT_DESC": "降順",
+  "DAY_OF_WEEK": "日月火水木金土",
+  "ADD_UP": "集計",
+  "OPEN_ADD_UP_VIEW": "集計ビューを開く",
+  "PREV_WEEK": "<<前週",
+  "CURR_WEEK": "今週",
+  "NEXT_WEEK": "次週>>",
+  "DOWNLOAD": "ダウンロード",
+
+  "MSG_CONFIRM_DELETE": "削除してもよろしいですか?",
+  "MSG_WARN_CURR_EST": "現在見積が不足しています。残工数が0以上となるように調節してください。",
+  "MSG_WARN_FUTURE_ACT": "未来日付の実績が入力されています。",
+
+  "DIVIDE_ACT_TO_TERM": "対象年月未指定の実績を展開",
+
+  "BEGIN_OF_WEEK": "週の始まり",
+  "BEGIN_OF_MONTH": "月の始まり",
+  "BEGIN_OF_YEAR": "年の始まり",
+
+  "ADD_UP_WEEK": "累計(週)",
+  "ADD_UP_MONTH": "累計(月)",
+  "ADD_UP_YEAR": "累計(年)",
+
+  "COL_LABEL_PROJECT_GROUP": "プロジェクトグループ",
+  "COL_LABEL_PROJECT": "プロジェクト",
+  "COL_LABEL_TERM": "対象年月",
+  "COL_LABEL_USER": "担当者",
+  "COL_LABEL_COMMENT": "コメント",
+
+  "COL_LABEL_TASK_TYPE": "作業種別",
+  "COL_LABEL_TASK_TYPE1": "分類1",
+  "COL_LABEL_TASK_TYPE2": "分類2",
+  "COL_LABEL_TASK_TYPE3": "分類3",
+  "COL_LABEL_TASK_TYPE4": "分類4",
+
+  "COL_LABEL_PRIORITY": "優先順位",
+  "COL_LABEL_ORIG_EST": "当初見積(h)",
+  "COL_LABEL_CURR_EST": "現在見積(h)",
+  "COL_LABEL_ELAPSED": "実績工数(h)",
+  "COL_LABEL_REMAIN": "残工数(h)",
+  "COL_LABEL_MIN_ACT_DATE": "作業開始日",
+  "COL_LABEL_MAX_ACT_DATE": "最終作業日",
+  "RECORDS": "{0}件",
+
+  "HELP": "?",
+  "HELPS": [
+    ["入力候補", "セルでCtrl+Space"],
+    ["編集モード", "セルでF2"],
+    ["ページ移動", "セルでPgUp/PgDn"],
+    ["週移動", "セルでAlt+Left/Alt+Right または Alt+PgUp/Alt+PgDn"],
+    ["今週へ移動", "セルでAlt+Up"],
+    ["明細行右クリック", "行追加,行複製,行削除"],
+    ["ヘッダ右クリック", "フィルタと並べ替えをクリア,集計ビューを開く"],
+    ["ヘッダ枠ドラッグ", "列幅の設定"],
+    ["ヘッダ枠ダブルクリック", "列幅を既定値に設定"]
+  ],
+
+  "TRAILER": ""
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<script type="text/javascript" src="assets/jquery-1.10.1.js"></script>
+<link rel="stylesheet" href="assets/wsproj.css" type="text/css"/>
+<script type="text/javascript" src="assets/wsproj-client.js"></script>
+<script type="text/javascript">
+$(function() {
+  var buildUrl = function(path) {
+    var url = location.href;
+    var i1 = url.indexOf(':');
+    var i2 = url.lastIndexOf('/');
+    return (location.protocol == 'https:'? 'wss' : 'ws') +
+      url.substring(i1, i2) + path;
+  };
+  var uid = location.hash? location.hash.substring(1) : 'user1';
+  var url = buildUrl('/ws/wsproj');
+  $('#placeHolder').append(wsproj.client.create({
+    uid: uid,
+    url: url,
+    servletUrl: 'wsws',
+    numPageRows: 15,
+    decorator: function($target) {
+      //var s = $target.text();
+      //$target.text('@' + s);
+    }
+  }));
+});
+</script>
+<title>wsproj</title>
+</head>
+<body>
+
+  <div style="width: 800px; height: 700px; overflow: hidden;">
+    <div class="wsproj-label" style="font-size:16px;font-weight:bold;"
+      >@wsproj</div>
+    <div class="wsproj-label">ページ移動:PgUp/PgDn 週移動:Alt+PgUp/Alt+PgDn</div>
+    <div id="placeHolder"></div>
+  </div>
+
+</body>
+</html>

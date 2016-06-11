@@ -1,0 +1,179 @@
+
+.wsproj,
+.wsproj-window,
+.wsproj-dropdown,
+.wsproj-label,
+.wsproj-button,
+TABLE.wsproj-table TH,
+TABLE.wsproj-table TD,
+INPUT[type="text"].wsproj-editor,
+TEXTAREA.wsproj-editor,
+SELECT.wsproj-select {
+  font-family: 'meiryo ui', sans-serif;
+  font-size: 9pt;
+}
+
+TABLE.wsproj-table {
+  border-collapse: collapse;
+}
+
+TABLE.wsproj-table,
+TABLE.wsproj-table TH,
+TABLE.wsproj-table TD {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #999999;
+}
+
+TABLE.wsproj-table TFOOT TR:first-child TD {
+  border-top-width: 2px;
+}
+
+TABLE.wsproj-table TH,
+TABLE.wsproj-table TD {
+  white-space: nowrap;
+  margin: 0px;
+  padding: 0px;
+}
+
+TABLE.wsproj-table TH {
+  font-weight: normal;
+  background-color: #eeeeee;
+  text-align: center;
+}
+
+SELECT.wsproj-select {
+  outline: none;
+}
+
+INPUT[type="text"].wsproj-editor,
+TEXTAREA.wsproj-editor {
+  outline: none;
+  resize: none;
+  border-style: none;
+  border-width: 0px;
+  padding: 0px;
+  margin: 0px;
+  background-color: transparent;
+}
+
+INPUT[type="text"].wsproj-editor::-ms-clear {
+  display: none;
+}
+
+.wsproj-dirty {
+  color: #cccccc;
+}
+
+.wsproj-window,
+.wsproj-dropdown {
+  text-align: left;
+  background-color: #ffffff;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #999999;
+  -webkit-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
+     -moz-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
+          box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+.wsproj-dropdown .wsproj-label:hover {
+  background-color: #eeeeff;
+}
+
+.wsproj-dropdown-button {
+  margin: 1px;
+  opacity: 1;
+}
+
+.wsproj-dropdown-button:hover {
+  opacity: 0.5;
+}
+
+.wsproj-checkbox {
+  opacity: 1;
+}
+
+.wsproj-checkbox:hover {
+  opacity: 0.5;
+}
+
+.wsproj-selected {
+  background-color: #dddddd;
+}
+
+.wsproj-selector {
+  margin: 1px;
+}
+
+.wsproj-checkbox {
+  margin: 1px;
+}
+
+.wsproj-filter-item-pane {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #f0f0f0;
+}
+
+.wsproj-button {
+  display: inline-block;
+  margin: 2px;
+  cursor: default;
+  padding: 2px 8px 2px 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #cccccc;
+  background-color: #e0e0e0;
+}
+
+.wsproj-button:hover {
+  background-color: #f0f0f0;
+}
+
+.wsproj-button:active {
+  background-color: #cccccc;
+}
+
+.wsproj-win-title {
+  font-weight: bold;
+  background-color: #eeeeee;
+  padding: 2px;
+  margin: 4px 4px 0px 4px;
+}
+
+.wsproj-win-content {
+  margin: 4px;
+  overflow: auto;
+}
+
+.wsproj-close-button {
+  opacity: 0.7;
+}
+
+.wsproj-close-button:hover {
+  opacity: 0.5;
+}
+
+.wsproj-close-button:active {
+  opacity: 1;
+}
+
+.wsproj-scrollbar {
+  background-color: #f0f0f0;
+}
+
+.wsproj-scrollbar-slider {
+  border-style: solid;
+  border-color: #f0f0f0;
+  border-width: 1px;
+  background-color: #cccccc;
+}
+
+.wsproj-scrollbar-slider:hover {
+  background-color: #aaaaaa;
+}
+
+.wsproj-scrollbar-slider:active {
+  background-color: #999999;
+}
