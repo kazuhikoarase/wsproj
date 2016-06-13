@@ -623,6 +623,11 @@ namespace wsproj.client {
       var column = tableModel.columns[$td.index()];
       var dataRow : DataRow = $tr.data('dataRow');
       editor.beginEdit($td, false);
+      if ($activeCell != null) {
+        // 速やかに編集モードを解除
+        editor.endEdit();
+        $activeCell = null;
+      }
 
       var menu : { label : string }[] = [];
       if (dataRow &&
