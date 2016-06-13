@@ -303,11 +303,22 @@ namespace wsproj.client {
       }
     }
 
+    function getRowListForFilter(columnId : string) {
+      var columns : DataColumn[] = [];
+      for (var i = 0; i < tableModel.columns.length; i += 1) {
+        var column = tableModel.columns[i];
+        if (columnId != column.id) {
+          columns.push(column);
+        }
+      }
+      return filterRows(columns, rowList);
+    }
+
     function createDefaultDropdownModel(
       column : DataColumn,
       filtered : boolean
     ) : DropdownModel {
-      var rows = filtered? getRowView() : rowList;
+      var rows = filtered? getRowView() : getRowListForFilter(column.id);
       var val : string;
       var valMap : { [val : string] : boolean} = {};
       var emptyItem = false;
