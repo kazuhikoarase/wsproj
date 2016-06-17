@@ -121,7 +121,7 @@ namespace wsproj.client {
 
     function createRowComparator(column : DataColumn) {
       function compareData(column : DataColumn,
-          data1 : any, data2 : any) : number {
+          data1 : any, data2 : any, ord : number) : number {
         var s1 = data1[column.id];
         var s2 = data2[column.id];
         var t1 = typeof s1;
@@ -133,11 +133,13 @@ namespace wsproj.client {
         } else if (t1 == 'undefined' && t2 != 'undefined') {
           return 1;
         } else {
+          var cp : number;
           if (column.dataType == 'number') {
-            return strToNum(s1) - strToNum(s2);
+            cp = strToNum(s1) - strToNum(s2);
           } else {
-            return s1 == s2? 0 : s1 < s2? -1 : 1;
+            cp = s1 == s2? 0 : s1 < s2? -1 : 1;
           }
+          return cp * ord;
         }
       }
       var ord = tableModel.sortOrder == SortOrder.DESC? -1 : 1;
@@ -152,12 +154,12 @@ namespace wsproj.client {
       }
       return function(row1 : DataRow, row2 : DataRow) {
         var cp = 0;
-        cp = compareData(column, row1.data, row2.data);
+        cp = compareData(column, row1.data, row2.data, ord);
         if (cp != 0) {
-          return ord * cp;
+            return cp;
         }
         for (var i = 0; i < defaultSortColumns.length; i += 1) {
-          cp = compareData(defaultSortColumns[i], row1.data, row2.data);
+          cp = compareData(defaultSortColumns[i], row1.data, row2.data, 1);
           if (cp != 0) {
             return cp;
           }
