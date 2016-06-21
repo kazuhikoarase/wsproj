@@ -350,6 +350,7 @@ namespace wsproj.client {
         }
       },
       getCursorColor : (dataRow) => dataRow &&
+        dataRow.data.userId &&
         dataRow.data.userId != loginUser.userId?
           styleConsts.otherUserCursorColor :
           styleConsts.currentCursorColor,
