@@ -54,6 +54,7 @@
   "COL_LABEL_CURR_EST": "現在見積(h)",
   "COL_LABEL_ELAPSED": "実績工数(h)",
   "COL_LABEL_REMAIN": "残工数(h)",
+  "COL_LABEL_ADD_UP": "累計(h)",
   "COL_LABEL_MIN_ACT_DATE": "作業開始日",
   "COL_LABEL_MAX_ACT_DATE": "最終作業日",
   "RECORDS": "{0}件",

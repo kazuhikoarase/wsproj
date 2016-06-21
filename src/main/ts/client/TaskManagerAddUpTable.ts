@@ -393,6 +393,10 @@ namespace wsproj.client {
       }
 
       tableModel = createTaskManagerTableModel(messages, numWeeks * 7, null);
+      /*tableModel.columns.push({
+        id: 'addUpAct',
+        label: messages.COL_LABEL_ADD_UP
+      });*/
       tableModel.userData.baseDate = baseDate;
       if (_$head.data('numWeeks') != numWeeks) {
         createHeader(_$head, tableModel, setupHeaderCell, columnResizeManager);

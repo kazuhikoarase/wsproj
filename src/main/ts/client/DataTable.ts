@@ -780,7 +780,7 @@ namespace wsproj.client {
         var dataRow : DataRow = $td.parent().data('dataRow');
         selectedRowIndex = dataRow? ($td.parent().index() + rowOffset) : -1;
         selectedColIndex = $td.index();
-        cursorManager.updateCursor($td);
+        updateCursor($td);
         $activeCell = $td;
         //console.log('beginEdit:' + selectedRowIndex + ',' + selectedColIndex);
       }).
@@ -791,6 +791,13 @@ namespace wsproj.client {
         updateCursor(null);*/
         //console.log('endEdit');
       });
+
+    function updateCursor($cell : JQuery) {
+      var dataRow : DataRow = $cell? $cell.parent().data('dataRow') : null;
+      cursorManager.updateCursor($cell,
+        tableModel.getCursorColor(dataRow) );
+    }
+
     var editor = createTableEditor($table);
     var cursorManager = createCursorManager($table);
 
@@ -1192,7 +1199,7 @@ namespace wsproj.client {
         userOp = false;
         //$currentCell.data('controller').beginEdit();
       }
-      cursorManager.updateCursor($currentCell);
+      updateCursor($currentCell);
 
       tm.end();
       tm.log();

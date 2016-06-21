@@ -18,6 +18,8 @@ namespace wsproj.server {
     }
   };
 
+  var getTime = () => +java.lang.System.currentTimeMillis();
+
   var loadStream = function(stream : any) {
     var bout = new java.io.ByteArrayOutputStream();
     try {
@@ -346,7 +348,6 @@ namespace wsproj.server {
       if (data.value) {
         userData[data.key] = data.value;
       } else {
-console.log('delete user data:' + data.key);
         delete userData[data.key];
       }
       service.putUserData(user.uid, JSON.stringify(userData) );
@@ -365,6 +366,15 @@ console.log('delete user data:' + data.key);
       }
 
       var lastTaskId = data.task.id;
+
+      var time = getTime();
+      if (data.task.id == 0) {
+        data.task.crtUser = user.uid;
+        data.task.crtDate = time;
+      }
+      data.task.updUser = user.uid;
+      data.task.updDate = time;
+
       putTask(data.task);
       ws.send({action: 'updateTask',
         lastTaskId: lastTaskId,

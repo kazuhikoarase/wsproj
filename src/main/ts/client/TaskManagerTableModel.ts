@@ -325,6 +325,11 @@ namespace wsproj.client {
         setReadonly('elapsed');
         setReadonly('remain');
 
+        if (data.crtUser == loginUser.userId &&
+              new Date().getTime() - data.crtDate < 1000 * 60 * 5) {
+          styles['id'].bgColor = styleConsts.latestBgColor;
+        }
+
         //setReadonly('minAct');
         //setReadonly('maxAct');
 
@@ -344,6 +349,10 @@ namespace wsproj.client {
           styles['remain'].title = messages.MSG_WARN_CURR_EST;
         }
       },
+      getCursorColor : (dataRow) => dataRow &&
+        dataRow.data.userId != loginUser.userId?
+          styleConsts.otherUserCursorColor :
+          styleConsts.currentCursorColor,
       dupColumns : [
         'projectGroup',
         'projectId',

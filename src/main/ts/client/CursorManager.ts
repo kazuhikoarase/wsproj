@@ -2,13 +2,14 @@
 namespace wsproj.client {
 
   function createOpaBox(
-    left : number, top : number, width : number, height : number
+    left : number, top : number, width : number, height : number,
+    color : string
   ) {
     return $('<div></div>').
       addClass('wsproj-current-cell').
       css('position', 'absolute').
       css('pointer-events', 'none').
-      css('background-color', styleConsts.currentRowColor).
+      css('background-color', color).
       css('opacity', 0.1).
       css('left', left + 'px').
       css('top', top + 'px').
@@ -17,14 +18,15 @@ namespace wsproj.client {
   }
 
   function createCellBox(
-    left : number, top : number, width : number, height : number
+    left : number, top : number, width : number, height : number,
+    color : string
   ) {
   
     return $('<div></div>').
       addClass('wsproj-current-cell').
       css('position', 'absolute').
       css('pointer-events', 'none').
-      css('border-color', styleConsts.currentCellColor).
+      css('border-color', color).
       css('border-style', 'solid').
       css('border-width', '2px').
       css('left', left + 'px').
@@ -37,7 +39,10 @@ namespace wsproj.client {
 
     var $cursors : { [id : string] : JQuery } = {};
 
-    function updateCursor($cell : JQuery)  {
+    function updateCursor(
+      $cell : JQuery,
+      color : string = styleConsts.currentCursorColor
+    )  {
 
       var id : string;
 
@@ -63,9 +68,12 @@ namespace wsproj.client {
 
       var $tr = $cell.parent();
       var off = getOffset($tr);
+      var fillColor = styleConsts.currentCursorColor;
 
       $cursors['row'] = createOpaBox(
-        off.left, off.top, $tr.outerWidth(), $tr.outerHeight() );
+        off.left, off.top,
+        $tr.outerWidth(), $tr.outerHeight(),
+        color);
 
       var $rows = $tr.parent().children();
       var colIndex = $cell.index();
@@ -81,19 +89,24 @@ namespace wsproj.client {
       height = off.top - upperTop;
       if (height > 0) {
         $cursors['upper'] = createOpaBox(
-          cellOff.left, upperTop, $cell.outerWidth(), height);
+          cellOff.left, upperTop,
+          $cell.outerWidth(), height, fillColor);
       }
 
       var cellBottom = cellOff.top + $cell.outerHeight();
       height = lowerTop + $lowerCell.outerHeight() - cellBottom;
       if (height > 0) {
         $cursors['lower'] = createOpaBox(
-          cellOff.left, cellBottom, $cell.outerWidth(), height);
+          cellOff.left, cellBottom,
+          $cell.outerWidth(), height, fillColor);
       }
 
       $cursors['cell'] = createCellBox(
-          cellOff.left - 1, cellOff.top - 1,
-          $cell.outerWidth() - 1, $cell.outerHeight() - 1);
+          cellOff.left - 1,
+          cellOff.top - 1,
+          $cell.outerWidth() - 1,
+          $cell.outerHeight() - 1,
+          color);
 
       // append all
       for (id in $cursors) {
