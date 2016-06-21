@@ -56,7 +56,7 @@ namespace wsproj.client {
             delete data.userId;
           }
         },
-        filter: {accepts : null}
+        filter: {accepts : null, keyword : null}
       },
       { id: 'project', label: messages.COL_LABEL_PROJECT,
         textInputAssist: true,
@@ -71,15 +71,15 @@ namespace wsproj.client {
             delete data.userId;
           }
         },
-        filter: {accepts : null}
+        filter: {accepts : null, keyword : null}
       },
       { id: 'term', label: messages.COL_LABEL_TERM, textInputAssist: true,
         resizable: true,
-        filter: {accepts : null}
+        filter: {accepts : null, keyword : null}
       },
       { id: 'user', label: messages.COL_LABEL_USER, textInputAssist: true,
         resizable: true,
-        filter: {accepts : null},
+        filter: {accepts : null, keyword : null},
         dropdownModel : {
           valueField : 'userId',
           labelField : 'userName',
@@ -99,29 +99,29 @@ namespace wsproj.client {
       },
       { id: 'comment', label: messages.COL_LABEL_COMMENT,
         resizable: true,
-        filter: {accepts : null},
+        filter: {accepts : null, keyword : null},
         sortable: false
       },
       { id: 'taskType1', label: messages.COL_LABEL_TASK_TYPE1,
         textInputAssist: true,
         resizable: true,
-        filter: {accepts : null},
+        filter: {accepts : null, keyword : null},
         groupLabel: messages.COL_LABEL_TASK_TYPE, groupSize: 4
       },
       { id: 'taskType2', label: messages.COL_LABEL_TASK_TYPE2,
         textInputAssist: true,
         resizable: true,
-        filter: {accepts : null}
+        filter: {accepts : null, keyword : null}
       },
       { id: 'taskType3', label: messages.COL_LABEL_TASK_TYPE3,
         textInputAssist: true,
         resizable: true,
-        filter: {accepts : null}
+        filter: {accepts : null, keyword : null}
       },
       { id: 'taskType4', label: messages.COL_LABEL_TASK_TYPE4,
         textInputAssist: true,
         resizable: true,
-        filter: {accepts : null}
+        filter: {accepts : null, keyword : null}
       },
 /*
       { id: 'pmanId', label: 'ppppID',
@@ -132,23 +132,23 @@ namespace wsproj.client {
       { id: 'priority', label: messages.COL_LABEL_PRIORITY, dataType: 'number',
         labelOrientation: 'vertical',
         minWidth: 20,
-        filter: {accepts : null} },
+        filter: {accepts : null, keyword : null} },
       { id: 'origEst', label: messages.COL_LABEL_ORIG_EST, dataType: 'number',
         labelOrientation: 'vertical',
         minWidth: 20,
-        filter: {accepts : null} },
+        filter: {accepts : null, keyword : null} },
       { id: 'currEst', label: messages.COL_LABEL_CURR_EST, dataType: 'number',
         labelOrientation: 'vertical',
         minWidth: 20,
-        filter: {accepts : null} },
+        filter: {accepts : null, keyword : null} },
       { id: 'elapsed', label: messages.COL_LABEL_ELAPSED, dataType: 'number',
         labelOrientation: 'vertical',
         minWidth: 20,
-        filter: {accepts : null} },
+        filter: {accepts : null, keyword : null} },
       { id: 'remain', label: messages.COL_LABEL_REMAIN, dataType: 'number',
         labelOrientation: 'vertical',
         minWidth: 20,
-        filter: {accepts : null} },
+        filter: {accepts : null, keyword : null} },
       /*
       { id: 'minAct', label: messages.COL_LABEL_MIN_ACT_DATE,
         resizable: true,

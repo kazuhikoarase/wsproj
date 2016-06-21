@@ -40,6 +40,7 @@ declare module wsproj.client {
 
   interface DataColumnFilter {
     accepts : FilterItems;
+    keyword : string;
   }
 
   interface FilterItems {
@@ -50,6 +51,7 @@ declare module wsproj.client {
     sortId : string;
     sortOrder: string;
     accepts: { [id : string]: string[] };
+    keywords?: { [id : string]: string };
   }
 
   interface ColumnWidthConfig {

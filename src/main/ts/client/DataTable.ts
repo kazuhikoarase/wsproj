@@ -88,18 +88,19 @@ namespace wsproj.client {
     }
 
     function createRowFilter(columns : DataColumn[]) {
-      var accepts : { [id : string] : FilterItems } = {};
+      var filters : { [id : string] : DataColumnFilter } = {};
       $.each(columns, function(i : number, column : DataColumn) {
         if (column.filter) {
-          accepts[column.id] = column.filter.accepts;
+          filters[column.id] = column.filter;
         }
       });
       return function(dataRow : DataRow) {
-        for (var id in accepts) {
+        for (var id in filters) {
           var val = dataRow.data[id];
           var accepted = false;
-          if (accepts[id]) {
-            for (var accVal in accepts[id]) {
+          var filter = filters[id];
+          if (filter.accepts) {
+            for (var accVal in filter.accepts) {
               if (accVal == '' && typeof val == 'undefined') {
                 accepted = true;
                 break;
@@ -110,6 +111,9 @@ namespace wsproj.client {
             }
           } else {
             accepted = true;
+          }
+          if (accepted && filter.keyword) {
+            accepted = contains(val || '', filter.keyword);
           }
           if (!accepted) {
             return false;
@@ -850,6 +854,25 @@ namespace wsproj.client {
       }
       updateSortSel();
 
+      var $keywordField = $('<input type="text"/>').
+          addClass('wsproj-editor').css('width', '100px').
+          on('keydown', function(event) {
+            if (event.keyCode == DOM_VK.RETURN) {
+              $okBtn.trigger('click');
+            }
+          }).on('keyup', function(event) {
+            updateItems();
+          });
+      if (column.filter.keyword) {
+        $keywordField.val(column.filter.keyword);
+      }
+
+      var $keywordPane = $('<span></span>').
+        css('display', 'inline-block').
+        css('border', '1px solid #f0f0f0').
+        css('margin', '2px 0px 2px 0px').
+        append($keywordField);
+
       var $itemPane = $('<div></div>').
         addClass('wsproj-filter-item-pane').
         css('padding', '2px').
@@ -936,7 +959,25 @@ namespace wsproj.client {
       });
       updateAllChk();
 
+      function updateItems() {
+        $itemPane.children().each(function(i) {
+          if (i > 0) {
+            var $item = $(this);
+            $item.css('display', '');
+            var keyword = $keywordField.val();
+            if (keyword && !contains($item.data('filterValue'), keyword) ) {
+              $item.css('display', 'none');
+            }
+          }
+        });
+      }
+      updateItems();
+
       var $okBtn = createButton(messages.OK).on('click', function(event) {
+
+          var keyword = trim($keywordField.val() );
+          column.filter.keyword = keyword.length > 0? keyword : null;
+
           var accepts : FilterItems = {};
           var rejected = false;
           $itemPane.children().each(function(i) {
@@ -950,6 +991,7 @@ namespace wsproj.client {
             }
           });
           column.filter.accepts = rejected? accepts : null;
+
           applyFilter();
           updateFilterButton();
           dispose();
@@ -968,8 +1010,9 @@ namespace wsproj.client {
         css('position', 'absolute').
         css('cursor', 'default').
         on('mousedown', function(event) {
-          event.preventDefault();
-        }).append($sortPane).append($itemPane).append($buttonPane);
+//          event.preventDefault();
+        }).append($sortPane).append($keywordPane).
+        append($itemPane).append($buttonPane);
 
       function dispose() {
         if ($dropdown != null) {
@@ -990,8 +1033,11 @@ namespace wsproj.client {
       }
 
       function keydownHandler(event : JQueryEventObject) {
-        event.preventDefault();
-        dispose();
+        if ($(event.target).closest('.wsproj-dropdown').length == 0 &&
+            $(event.target).closest('.wsproj-dropdown-button').length == 0) {
+          event.preventDefault();
+          dispose();
+        }
       }
 
       var off = $target.offset();
@@ -1008,7 +1054,8 @@ namespace wsproj.client {
       $.each(tableModel.columns, function(i : number, column : DataColumn) {
         var ctrl = $head.find('#flt_' + column.id).data('controller');
         if (ctrl) {
-          ctrl.setFiltered(column.filter.accepts != null);
+          ctrl.setFiltered(column.filter.accepts != null ||
+            column.filter.keyword != null);
           if (column.id == tableModel.sortId) {
             ctrl.setSortOrder(tableModel.sortOrder);
           } else {
@@ -1023,19 +1070,28 @@ namespace wsproj.client {
       tableModel.sortOrder = config.sortOrder;
       $.each(tableModel.columns,
         function(i : number, column : DataColumn) {
-          if (column.filter && config.accepts) {
-            var vals = config.accepts[column.id];
-            if (vals) {
-              var accepts : FilterItems = {};
-              for (var v = 0; v < vals.length; v += 1) {
-                accepts[vals[v]] = true;
+          if (column.filter) {
+            if (config.accepts) {
+              var vals = config.accepts[column.id];
+              if (vals) {
+                var accepts : FilterItems = {};
+                for (var v = 0; v < vals.length; v += 1) {
+                  accepts[vals[v]] = true;
+                }
+                column.filter.accepts = accepts;
+              } else {
+                column.filter.accepts = null;
               }
-              column.filter.accepts = accepts;
-            } else {
-              column.filter.accepts = null;
+            }
+            if (config.keywords) {
+              var keyword = config.keywords[column.id];
+              if (keyword) {
+                column.filter.keyword = keyword;
+              } else {
+                column.filter.keyword = null;
+              }
             }
           }
-          
       });
       applyFilter();
       updateFilterButton();
@@ -1045,16 +1101,22 @@ namespace wsproj.client {
       var config : DataTableConfig = {
         sortId : tableModel.sortId,
         sortOrder : tableModel.sortOrder,
-        accepts : {}
+        accepts : {},
+        keywords : {}
       };
       $.each(tableModel.columns,
         function(i : number, column : DataColumn) {
-          if (column.filter && column.filter.accepts) {
-            var accepts : string[] = [];
-            for (var val in column.filter.accepts) {
-              accepts.push(val);
+          if (column.filter) {
+            if (column.filter.accepts) {
+              var accepts : string[] = [];
+              for (var val in column.filter.accepts) {
+                accepts.push(val);
+              }
+              config.accepts[column.id] = accepts;
             }
-            config.accepts[column.id] = accepts;
+            if (column.filter.keyword) {
+              config.keywords[column.id] = column.filter.keyword;
+            }
           }
       });
       return config;

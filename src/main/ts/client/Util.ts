@@ -5,6 +5,10 @@ namespace wsproj.client {
     return s.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
   }
 
+  export function contains(s : string, keyword : string) {
+    return s.toLowerCase().indexOf(keyword.toLowerCase() ) != -1;
+  }
+
   export function removeInvalidChars(s : string) {
       //0~8,b,c,e~1f,7f
     return s.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '');

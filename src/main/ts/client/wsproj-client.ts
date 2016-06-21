@@ -5,7 +5,8 @@ namespace wsproj.client {
     return {
       sortId: null,
       sortOrder: null,
-      accepts: {}
+      accepts: {},
+      keywords: {}
     };
   }
 
