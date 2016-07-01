@@ -7,6 +7,8 @@ namespace wsproj.client {
     loginUser : TaskUser
   ) {
 
+    var loginUserId = loginUser? loginUser.userId : '';
+
     function getProjectGroups(data : any) {
       return columnMap['projectGroup'].dropdownModel.getItems(data);
     }
@@ -325,7 +327,7 @@ namespace wsproj.client {
         setReadonly('elapsed');
         setReadonly('remain');
 
-        if (data.crtUser == loginUser.userId &&
+        if (data.crtUser == loginUserId &&
               new Date().getTime() - data.crtDate < 1000 * 60 * 5) {
           styles['id'].bgColor = styleConsts.latestBgColor;
         }
@@ -351,7 +353,7 @@ namespace wsproj.client {
       },
       getCursorColor : (dataRow) => dataRow &&
         dataRow.data.userId &&
-        dataRow.data.userId != loginUser.userId?
+        dataRow.data.userId != loginUserId?
           styleConsts.otherUserCursorColor :
           styleConsts.currentCursorColor,
       dupColumns : [
