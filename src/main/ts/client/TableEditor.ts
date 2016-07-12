@@ -161,6 +161,9 @@ namespace wsproj.client {
     function beginEdit($td : JQuery, userOp : boolean) {
 
       if (_editing) {
+        if (!userOp) {
+          return;
+        }
 /*
         var curPos = getCellPos(_$td);
         var newPos = getCellPos($td);
