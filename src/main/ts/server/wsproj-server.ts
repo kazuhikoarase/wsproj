@@ -21,9 +21,9 @@ namespace wsproj.server {
   var getTime = () => +Java.type('java.lang.System').currentTimeMillis();
 
   var loadStream = function(stream : any) {
-    var bout = new Java.type('java.io.ByteArrayOutputStream')();
+    var bout = new (Java.type('java.io.ByteArrayOutputStream'))();
     try {
-      var fin = new Java.type('java.io.BufferedInputStream')(stream);
+      var fin = new (Java.type('java.io.BufferedInputStream'))(stream);
       try {
         var buf = Java.type('java.lang.reflect.Array').newInstance(
               Java.type('java.lang.Byte').TYPE, 4096);
@@ -58,7 +58,7 @@ namespace wsproj.server {
     if (resIn == null) {
       resIn = getResIn('en');
     }
-    return JSON.parse('' + new Java.type('java.lang.String')(
+    return JSON.parse('' + new (Java.type('java.lang.String'))(
         loadStream(resIn), 'UTF-8') );
   };
 
@@ -78,7 +78,7 @@ namespace wsproj.server {
 
   function sync(lock : any, sync : () => void) {
     Java.type('ws.ISync').sync.sync(lock,
-        new Java.type('ws.ISync')({ sync: sync } ) );
+        new (Java.type('ws.ISync'))({ sync: sync } ) );
   }
 
   function getWatchList() {
@@ -172,7 +172,7 @@ namespace wsproj.server {
       }
     };
 
-    var endpoint = new Java.type('ws.IEndpoint')({
+    var endpoint = new (Java.type('ws.IEndpoint'))({
       onOpen: onopen, onClose: onclose, onMessage: onmessage
     });
 
@@ -426,7 +426,7 @@ namespace wsproj.server {
       'attachment; filename="' + filename + '"');
 
     outputGzip(function(out) {
-      var writer = new Java.type('java.io.OutputStreamWriter')(out, 'UTF-8');
+      var writer = new (Java.type('java.io.OutputStreamWriter'))(out, 'UTF-8');
       try {
         outputXmlTasks(writer);
       } finally {
@@ -437,7 +437,7 @@ namespace wsproj.server {
 
   function outputXmlTasks(out : any) {
 
-    var CRLF = new Java.type('java.lang.String')('\r\n');
+    var CRLF = new (Java.type('java.lang.String'))('\r\n');
 
     var CMT_SUFFIX = '$C';
 
@@ -475,7 +475,7 @@ namespace wsproj.server {
         var c = s.charAt(i);
         if (c < '\u0020') {
           out.write('&#');
-          out.write('' + c.charCodeAt(0) );
+          out.write( ('' + c.charCodeAt(0) ).substring(0) );
           out.write(';');
         } else if (c == '<') {
           out.write('&lt;');
