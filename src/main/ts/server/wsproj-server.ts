@@ -2,9 +2,9 @@
 'use strict';
 namespace wsproj.server {
 
+  declare var Java : any;
+
   declare var context : any;
-  declare var java : any;
-  declare var Packages : any;
   declare var $global : any;
   declare var $servletContext : any;
   declare var $request : any;
@@ -18,15 +18,15 @@ namespace wsproj.server {
     }
   };
 
-  var getTime = () => +java.lang.System.currentTimeMillis();
+  var getTime = () => +Java.type('java.lang.System').currentTimeMillis();
 
   var loadStream = function(stream : any) {
-    var bout = new java.io.ByteArrayOutputStream();
+    var bout = new Java.type('java.io.ByteArrayOutputStream')();
     try {
-      var fin = new java.io.BufferedInputStream(stream);
+      var fin = new Java.type('java.io.BufferedInputStream')(stream);
       try {
-        var buf = java.lang.reflect.Array.newInstance(
-              java.lang.Byte.TYPE, 4096);
+        var buf = Java.type('java.lang.reflect.Array').newInstance(
+              Java.type('java.lang.Byte').TYPE, 4096);
         var len : number;
         while ( (len = fin.read(buf) ) != -1) {
           bout.write(buf, 0, len);
@@ -58,7 +58,7 @@ namespace wsproj.server {
     if (resIn == null) {
       resIn = getResIn('en');
     }
-    return JSON.parse('' + new java.lang.String(
+    return JSON.parse('' + new Java.type('java.lang.String')(
         loadStream(resIn), 'UTF-8') );
   };
 
@@ -77,8 +77,8 @@ namespace wsproj.server {
   };
 
   function sync(lock : any, sync : () => void) {
-    Packages.ws.ISync.sync.sync(lock,
-        new Packages.ws.ISync({ sync: sync } ) );
+    Java.type('ws.ISync').sync.sync(lock,
+        new Java.type('ws.ISync')({ sync: sync } ) );
   }
 
   function getWatchList() {
@@ -172,7 +172,7 @@ namespace wsproj.server {
       }
     };
 
-    var endpoint = new Packages.ws.IEndpoint({
+    var endpoint = new Java.type('ws.IEndpoint')({
       onOpen: onopen, onClose: onclose, onMessage: onmessage
     });
 
@@ -184,7 +184,7 @@ namespace wsproj.server {
   }
 
   function tran(task : (conn : any) => void) {
-    var ConnManager = Packages.wsproj.sql.ConnManager;
+    var ConnManager = Java.type('wsproj.sql.ConnManager');
     var conn = ConnManager.getInstance().getConnection();
     try {
       task(conn);
@@ -318,7 +318,7 @@ namespace wsproj.server {
 
   export function create() {
 
-    var service = Packages.wsproj.service.WSProjService.getInstance();
+    var service = Java.type('wsproj.service.WSProjService').getInstance();
 
     var user : any = null;
 
@@ -391,8 +391,8 @@ namespace wsproj.server {
 
   function outputGzip(outputHandler : (out : any) => void) {
 
-    var BufferedOutputStream = java.io.BufferedOutputStream;
-    var GZIPOutputStream = java.util.zip.GZIPOutputStream;
+    var BufferedOutputStream = Java.type('java.io.BufferedOutputStream');
+    var GZIPOutputStream = Java.type('java.util.zip.GZIPOutputStream');
 
     var acceptEncoding = $request.getHeader('accept-encoding');
 
@@ -426,7 +426,7 @@ namespace wsproj.server {
       'attachment; filename="' + filename + '"');
 
     outputGzip(function(out) {
-      var writer = new java.io.OutputStreamWriter(out, 'UTF-8');
+      var writer = new Java.type('java.io.OutputStreamWriter')(out, 'UTF-8');
       try {
         outputXmlTasks(writer);
       } finally {
@@ -437,7 +437,7 @@ namespace wsproj.server {
 
   function outputXmlTasks(out : any) {
 
-    var CRLF = new java.lang.String('\r\n');
+    var CRLF = new Java.type('java.lang.String')('\r\n');
 
     var CMT_SUFFIX = '$C';
 
