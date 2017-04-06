@@ -288,12 +288,14 @@ namespace wsproj.client {
           }
           if (!data.footer) {
             if (date > today) {
+              /*
               if (data['act' + date]) {
                 style.color = styleConsts.errorColor;
                 style.title = messages.MSG_WARN_FUTURE_ACT;
               } else {
                 style.readonly = true;
               }
+              */
             }
           }
         }
