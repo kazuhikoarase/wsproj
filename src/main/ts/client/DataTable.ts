@@ -1145,7 +1145,13 @@ namespace wsproj.client {
         if (column.filter) {
           $filterButton = createFilterButton().
             css('vertical-align', 'middle');
-          $lh.append($filterButton);
+          $lh.append($('<span></span>').css('display', 'inline-block').
+            css('vertical-align', 'middle').
+            css('width', '15px').css('height', '15px') );
+          //filterButton);
+          $th.css('position', 'relative');
+          $filterButton.css('position', 'absolute').css('right', '2px').css('bottom', '0px');
+          $th.append($filterButton);
         }
         $th.append($lh);
       }

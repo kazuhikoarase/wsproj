@@ -56,6 +56,9 @@ namespace wsproj.client {
     }
     function update() {
       $btn.children().remove();
+      $btn.append(createSVGElement('rect').
+        attr({x : 0, y : 0, width: 15, height : 15, rx: 3, ry : 3}).
+        css({ fill : '#000000', stroke : 'none', opacity : '0.1'}) );
       if (_filtered) {
         $btn.append(createSVGElement('path').
           attr('stroke', 'none').attr('fill', defaultColor).
