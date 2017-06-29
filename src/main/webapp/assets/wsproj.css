@@ -14,15 +14,15 @@ SELECT.wsproj-select {
 }
 
 TABLE.wsproj-table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-bottom: 1px solid #999999;
+  border-right: 1px solid #999999;
 }
 
-TABLE.wsproj-table,
 TABLE.wsproj-table TH,
 TABLE.wsproj-table TD {
-  border-width: 1px;
-  border-style: solid;
-  border-color: #999999;
+  border-top: 1px solid #999999;
+  border-left: 1px solid #999999;
 }
 
 TABLE.wsproj-table TFOOT TR:first-child TD {

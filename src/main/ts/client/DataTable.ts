@@ -760,6 +760,7 @@ namespace wsproj.client {
     var $activeCell : JQuery = null;
 
     var $table = $('<table></table>').addClass('wsproj-table').
+      attr('cellspacing', '0').
       append($head).append($foot).append($body).
       on('keydown', table_keydownHandler).
       on('contextmenu', table_contextmenuHandler).
