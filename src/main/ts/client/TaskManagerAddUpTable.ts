@@ -23,6 +23,7 @@ namespace wsproj.client {
     var _$foot : JQuery = $('<tfoot></tfoot>');
     var _$body : JQuery = $('<tbody></tbody>');
     var _$table = $('<table></table>').addClass('wsproj-table').
+      attr('cellspacing', '0').
       append(_$head).append(_$foot).append(_$body);
 
     var editor = createTableEditor(_$table);
