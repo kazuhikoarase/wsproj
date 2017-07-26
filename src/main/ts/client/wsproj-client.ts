@@ -203,7 +203,7 @@ namespace wsproj.client {
       }();
 
       $.ajax({
-        type: 'POST',
+        method: 'POST',
         url: opts.servletUrl,
         data: { fn: 'getProjectGroups' }
       }).done(function(data) {
@@ -225,7 +225,7 @@ namespace wsproj.client {
         });
 
         $.ajax({
-          type: 'POST',
+          method: 'POST',
           url: opts.servletUrl,
           data: { projectId: projectIdList }
         }).done(function(tasks) {
