@@ -437,6 +437,13 @@ namespace wsproj.server {
 
   function outputXmlTasks(out : any) {
 
+    var dateFrom = $request.getParameter('dateFrom');
+    var dateTo = $request.getParameter('dateTo');
+    var includeNoActs = $request.getParameter('includeNoActs');
+    dateFrom = dateFrom != null? '' + dateFrom : '';
+    dateTo = dateTo != null? '' + dateTo : '';
+    includeNoActs = includeNoActs != null? '' + includeNoActs : 'true';
+
     var CRLF = new (Java.type('java.lang.String'))('\r\n');
 
     var CMT_SUFFIX = '$C';
@@ -470,25 +477,27 @@ namespace wsproj.server {
       }
     }();
 
-    function writeXml(s : string) {
+    function escapeXml(s : string) {
+      var buf = '';
       for (var i = 0; i < s.length; i += 1) {
         var c = s.charAt(i);
         if (c < '\u0020') {
-          out.write('&#');
-          out.write( ('' + c.charCodeAt(0) ).substring(0) );
-          out.write(';');
+          buf += '&#';
+          buf +=  ('' + c.charCodeAt(0) ).substring(0);
+          buf += ';';
         } else if (c == '<') {
-          out.write('&lt;');
+          buf += '&lt;';
         } else if (c == '>') {
-          out.write('&gt;');
+          buf += '&gt;';
         } else if (c == '&') {
-          out.write('&amp;');
+          buf += '&amp;';
         } else if (c == '"') {
-          out.write('&quot;');
+          buf += '&quot;';
         } else {
-          out.write(c);
+          buf += c;
         }
       }
+      return buf;
     }
 
     var validProjects = function() {
@@ -511,20 +520,6 @@ namespace wsproj.server {
 
       var id : string;
 
-      out.write('<Task');
-      for (var i = 0; i < cols.length; i += 1) {
-        id = cols[i];
-        var val = data[id];
-        if (typeof val != 'undefined') {
-          out.write(' ');
-          out.write(id);
-          out.write('="');
-          writeXml('' + val);
-          out.write('"');
-        }
-      }
-      out.write('>');
-
       var actIdList : string[] = [];
       for (id in data) {
         if (isActDate(id) ) {
@@ -533,25 +528,49 @@ namespace wsproj.server {
       }
       actIdList.sort();
 
+      var buf = '';
       for (var i = 0; i < actIdList.length; i += 1) {
         id = actIdList[i];
 
-        out.write('<Act date="');
-        out.write(id.substring(3) );
-        out.write('" hours="');
-        out.write(data[id]);
-        out.write('"');
+        var date = id.substring(3);
+        if (dateFrom && dateFrom > date || dateTo && dateTo < date) {
+          continue;
+        }
+
+        buf += '<Act date="';
+        buf += date;
+        buf += '" hours="';
+        buf += data[id];
+        buf += '"';
 
         var cmt = data[id + CMT_SUFFIX];
         if (typeof cmt != 'undefined') {
-          out.write(' comment="');
-          writeXml('' + cmt);
-          out.write('"');
+          buf += ' comment="';
+          buf += escapeXml('' + cmt);
+          buf += '"';
         }
 
-        out.write('/>');
+        buf += '/>';
       }
 
+      if (includeNoActs == 'false' && buf.length == 0) {
+        return;
+      }
+
+      out.write('<Task');
+      for (var i = 0; i < cols.length; i += 1) {
+        id = cols[i];
+        var val = data[id];
+        if (typeof val != 'undefined') {
+          out.write(' ');
+          out.write(id);
+          out.write('="');
+          out.write(escapeXml('' + val) );
+          out.write('"');
+        }
+      }
+      out.write('>');
+      out.write(buf);
       out.write('</Task>');
       out.write(CRLF);
     }
