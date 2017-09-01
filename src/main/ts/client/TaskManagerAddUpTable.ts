@@ -348,7 +348,9 @@ namespace wsproj.client {
           sumOp(src.data, dst.data.sum, sumIds[s]);
         }
         for (id in src.data) {
-          if (isActDate(id) ) {
+          var actDate = id.substring(3);
+          if (isActDate(id) && dataTable.tableModel.filter(
+              <any>{ data : { minAct : actDate, maxAct : actDate } }) ) {
             sumOp(src.data, dst.data.sum, id);
             if (minAct == null || minAct > id) {
               minAct = id;

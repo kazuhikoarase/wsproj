@@ -205,6 +205,7 @@ namespace wsproj.client {
       columns : columns,
       sortId : null,
       sortOrder : null,
+      filter : (dataRow : DataRow) => true,
       getDataId : (id : string) => {
         if (id.match(actIdRe) ) {
           return 'act' + formatDate(rollDate(

@@ -437,11 +437,11 @@ namespace wsproj.server {
 
   function outputXmlTasks(out : any) {
 
-    var dateFrom = $request.getParameter('dateFrom');
-    var dateTo = $request.getParameter('dateTo');
+    var minAct = $request.getParameter('minAct');
+    var maxAct = $request.getParameter('maxAct');
     var includeNoActs = $request.getParameter('includeNoActs');
-    dateFrom = dateFrom != null? '' + dateFrom : '';
-    dateTo = dateTo != null? '' + dateTo : '';
+    minAct = minAct != null? '' + minAct : '';
+    maxAct = maxAct != null? '' + maxAct : '';
     includeNoActs = includeNoActs != null? '' + includeNoActs : 'true';
 
     var CRLF = new (Java.type('java.lang.String'))('\r\n');
@@ -533,7 +533,7 @@ namespace wsproj.server {
         id = actIdList[i];
 
         var date = id.substring(3);
-        if (dateFrom && dateFrom > date || dateTo && dateTo < date) {
+        if (minAct && minAct > date || maxAct && maxAct < date) {
           continue;
         }
 

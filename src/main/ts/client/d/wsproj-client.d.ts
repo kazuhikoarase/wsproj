@@ -17,6 +17,12 @@ declare module wsproj.client {
     setOnline : (online : boolean) => void
   }
 
+  interface ActDataRangeConfig {
+    minAct : string;
+    maxAct : string;
+    includeNoActs : boolean;
+  }
+
   interface TaskAddUpConfigUI {
     $ui : JQuery,
     setConfig : (config : TaskAddUpConfig) => void,

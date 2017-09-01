@@ -67,6 +67,7 @@ declare module wsproj.client {
     getDataId : (id : string) => string;
     getDataValues : (id : string, dataRow : DataRow) => string[];
     setDataRowStyle : (dataRow : DataRow, styles : CellStyles) => void;
+    filter : (dataRow : DataRow) => boolean;
     getCursorColor : (dataRow : DataRow) => string;
     getFootRow : (rows : DataRow[]) => any;
     dupColumns : string[];

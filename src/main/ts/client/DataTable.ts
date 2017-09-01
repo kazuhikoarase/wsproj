@@ -184,7 +184,7 @@ namespace wsproj.client {
       var filter = createRowFilter(columns);
       var filteredRows : DataRow[] = [];
       for (var i = 0; i < rows.length; i += 1) {
-        if (filter(rows[i]) ) {
+        if (tableModel.filter(rows[i]) && filter(rows[i]) ) {
           filteredRows.push(rows[i]);
         }
       }
