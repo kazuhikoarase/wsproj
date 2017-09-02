@@ -17,7 +17,7 @@ declare module wsproj.client {
     setOnline : (online : boolean) => void
   }
 
-  interface ActDataRangeConfig {
+  interface RowFilterConfig {
     minAct : string;
     maxAct : string;
     includeNoActs : boolean;

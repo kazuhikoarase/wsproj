@@ -203,6 +203,7 @@ namespace wsproj.client {
       },
       numPageRows : 25,
       columns : columns,
+      rowFilterConfig : null,
       sortId : null,
       sortOrder : null,
       filter : (dataRow : DataRow) => true,

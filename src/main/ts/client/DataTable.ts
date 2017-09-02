@@ -1067,6 +1067,7 @@ namespace wsproj.client {
     }
 
     function setConfig(config : DataTableConfig) {
+      tableModel.rowFilterConfig = config.rowFilterConfig;
       tableModel.sortId = config.sortId;
       tableModel.sortOrder = config.sortOrder;
       $.each(tableModel.columns,
@@ -1100,6 +1101,7 @@ namespace wsproj.client {
 
     function getConfig() : DataTableConfig {
       var config : DataTableConfig = {
+        rowFilterConfig : tableModel.rowFilterConfig,
         sortId : tableModel.sortId,
         sortOrder : tableModel.sortOrder,
         accepts : {},

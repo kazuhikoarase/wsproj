@@ -3,6 +3,7 @@ namespace wsproj.client {
 
   function createDataTableConfig() : DataTableConfig {
     return {
+      rowFilterConfig: null,
       sortId: null,
       sortOrder: null,
       accepts: {},
@@ -151,7 +152,6 @@ namespace wsproj.client {
 
     var sid : string = null;
     var loginUser : TaskUser = null;
-    var actDataRangeConfig : ActDataRangeConfig = null;
     var onlineStatusUI : OnlineStatusUI = null;
     var taskAddUpConfigUI : TaskAddUpConfigUI = null;
     var dataTable : DataTable<TaskManager> = null;
@@ -235,7 +235,6 @@ namespace wsproj.client {
           });
           if (!initialized) {
             getUserData('dataTableConfig');
-            getUserData('actDateRangeConfig');
             getUserData('columnWidthConfig');
             getUserData('taskAddUpConfig');
           } else {
@@ -255,15 +254,11 @@ namespace wsproj.client {
           if (!config) {
             config = createDefaultDataTableConfig();
           }
-          dataTable.setConfig(config);
-        }();
-      } else if (data.key == 'actDateRangeConfig') {
-        !function() {
-          var config : ActDataRangeConfig = data.value;
-          if (!config) {
-            config = createDefaultActDataRangeConfig();
+          if (!config.rowFilterConfig) {
+            config.rowFilterConfig = createDefaultRowFilterConfig();
           }
-          setActDataRangeConfig(config);
+          updateRowFilter(config.rowFilterConfig);
+          dataTable.setConfig(config);
         }();
       } else if (data.key == 'columnWidthConfig') {
         !function() {
@@ -284,20 +279,21 @@ namespace wsproj.client {
       }
     }
 
-    function createDefaultActDataRangeConfig() {
+    function createDefaultRowFilterConfig() {
       return { minAct : '', maxAct : '', includeNoActs : true };
     }
 
-    function getActDataRangeConfig() {
-      return actDataRangeConfig || createDefaultActDataRangeConfig();
+    function getRowFilterConfig() : RowFilterConfig {
+      return dataTable.tableModel.rowFilterConfig ||
+        createDefaultRowFilterConfig();
     }
 
-    function setActDataRangeConfig(config : ActDataRangeConfig) {
-      actDataRangeConfig = config;
+    function updateRowFilter(config : RowFilterConfig) {
+      dataTable.tableModel.rowFilterConfig = config;
       dataTable.tableModel.filter = (dataRow : DataRow) => {
         var minAct = dataRow.data.minAct;
         var maxAct = dataRow.data.maxAct;
-        if ( (!minAct || !maxAct) && !config.includeNoActs) {
+        if (!config.includeNoActs && (!minAct || !maxAct) ) {
           return false;
         }
         if (config.minAct && maxAct && config.minAct > maxAct ||
@@ -305,9 +301,7 @@ namespace wsproj.client {
           return false;
         }
         return true;
-      }
-      // apply filter
-      dataTable.setConfig(dataTable.getConfig() );
+      };
     }
 
     function putUserData(key : string, value : any) {
@@ -445,7 +439,7 @@ namespace wsproj.client {
             }
             idList += '' + rows[i].data.id;
           }
-          var config = getActDataRangeConfig();
+          var config = getRowFilterConfig();
           $donwloadForm.children('#filename').val('tasks_' +
             formatDate(getToday() ) + '.xml');
           $donwloadForm.children('#idList').val(idList);
@@ -545,14 +539,17 @@ namespace wsproj.client {
 
       var parseDate = function(end : boolean, val : string) {
         var date = new Date();
+        var parseNum = function(s : string, min : number, max : number) {
+          return Math.max(min, Math.min(strToNum(s), max) );
+        };
         if (val.match(/^([0-9]+)$/) ) {
-          var d = strToNum(RegExp.$1);
+          var d = parseNum(RegExp.$1, 1, 31);
           date.setDate(d);
           return date;
         } else if (val.match(/^([0-9]+)[^0-9]([0-9]+)$/) ) {
           if (RegExp.$1.length == 4) {
-            var y = strToNum(RegExp.$1);
-            var m = strToNum(RegExp.$2);
+            var y = parseNum(RegExp.$1, 2000, 2100);
+            var m = parseNum(RegExp.$2, 1, 12);
             if (!end) {
               date.setFullYear(y);
               date.setMonth(m - 1);
@@ -563,8 +560,8 @@ namespace wsproj.client {
               date.setDate(0);
             }
           } else {
-            var m = strToNum(RegExp.$1);
-            var d = strToNum(RegExp.$2);
+            var m = parseNum(RegExp.$1, 1, 12);
+            var d = parseNum(RegExp.$2, 1, 31);
             date.setMonth(m - 1);
             date.setDate(d);
             var min = new Date();
@@ -579,9 +576,9 @@ namespace wsproj.client {
           }
           return date;
         } else if (val.match(/^([0-9]+)[^0-9]([0-9]+)[^0-9]([0-9]+)$/) ) {
-          var y = strToNum(RegExp.$1);
-          var m = strToNum(RegExp.$2);
-          var d = strToNum(RegExp.$3);
+          var y = parseNum(RegExp.$1, 0, 2100);
+          var m = parseNum(RegExp.$2, 1, 12);
+          var d = parseNum(RegExp.$3, 1, 31);
           date.setFullYear(y < 100? y + 2000 : y);
           date.setMonth(m - 1);
           date.setDate(d);
@@ -593,7 +590,9 @@ namespace wsproj.client {
       var createDateField = function(end : boolean) {
         var _date : Date = null;
         var $tx = $('<input type="text"/>').
-          attr('maxlength', '10').css('width', '80px').on('change', function(event) {
+          css('outline', 'none').
+          attr('maxlength', '10').css('width', '80px').
+          on('change', function(event) {
             var val = toNarrowStr($(this).val() );
             setDate(parseDate(end, val) );
           });
@@ -614,21 +613,24 @@ namespace wsproj.client {
         };
       }
 
-      var config = getActDataRangeConfig();
+      var config = getRowFilterConfig();
 
       var minActUI = createDateField(false);
       var maxActUI = createDateField(true);
       minActUI.setValue(config.minAct);
       maxActUI.setValue(config.maxAct);
-      var $range = $('<div></div>').append(minActUI.$ui).
+      var $range = $('<div></div>').css('margin','8px 4px 8px 4px').
+        append(minActUI.$ui).
         append($('<span></span>').text(' ~ ') ).
         append(maxActUI.$ui);
 
       var $chk = $('<input type="checkbox"/>').
         css('vertical-align', 'middle').
         prop('checked', config.includeNoActs);
-      var $incNA = $('<div></div>').append($chk).append($('<span></span>').
+      var $incNA = $('<div></div>').css('margin','8px 4px 8px 4px').
+        append($chk).append($('<span></span>').
         css('vertical-align', 'middle').
+        css('cursor', 'default').
         text(messages.INCLUDE_NO_ACTS).on('mousedown', function(event) {
           event.preventDefault();
           $chk.trigger('click');
@@ -640,11 +642,12 @@ namespace wsproj.client {
           if (data.detail != messages.OK) {
             return;
           }
-          setActDataRangeConfig({
+          updateRowFilter({
             includeNoActs : $chk.prop('checked'),
             minAct : minActUI.getValue(),
             maxAct : maxActUI.getValue()
           });
+          dataTable.setConfig(dataTable.getConfig() );
         } );
     }
 

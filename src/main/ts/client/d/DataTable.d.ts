@@ -48,10 +48,11 @@ declare module wsproj.client {
   }
 
   interface DataTableConfig {
+    rowFilterConfig : any;
     sortId : string;
-    sortOrder: string;
-    accepts: { [id : string]: string[] };
-    keywords?: { [id : string]: string };
+    sortOrder : string;
+    accepts : { [id : string]: string[] };
+    keywords? : { [id : string]: string };
   }
 
   interface ColumnWidthConfig {
@@ -62,6 +63,7 @@ declare module wsproj.client {
     userData : T;
     numPageRows : number;
     columns : DataColumn[];
+    rowFilterConfig : any;
     sortId : string;
     sortOrder: string;
     getDataId : (id : string) => string;
