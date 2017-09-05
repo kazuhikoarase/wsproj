@@ -124,8 +124,7 @@ namespace wsproj.server {
           var dlm = msgs[2];
           var dat = msgs[3];
           var data : any = null;
-          var lock = new Java.type('java.lang.String')(sid).intern();
-          sync(lock, function() {
+          sync(buffer, function() {
             if (dlm == '$') {
               data = JSON.parse(buffer[sid] || '{}');
               delete buffer[sid];

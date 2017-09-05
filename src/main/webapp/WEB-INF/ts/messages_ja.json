@@ -9,7 +9,7 @@
   "DEL_ROW": "行削除",
   "CLEAR_FILTER": "フィルターと並べ替えをクリア",
   "APPLY_DEFAULT_FILTER": "既定のフィルターと並べ替えを適用",
-  "ACT_FILTER": "実績フィルタ",
+  "ACT_FILTER": "実績フィルター",
   "INCLUDE_NO_ACTS": "実績の無いデータも含める",
   "MINIMIZE_ALL_COLUMNS": "全ての列幅を最小化",
   "RESTORE_ALL_COLUMNS": "全ての列幅を元に戻す",
