@@ -1,5 +1,5 @@
-
 'use strict';
+
 namespace wsproj.server {
 
   declare var Java : any;
@@ -113,6 +113,51 @@ namespace wsproj.server {
     }
   }
 
+  var dataManager = function() {
+    var buffer : { [ sid : string ] : string } = {};
+    var maxLength = 8000;
+    return {
+      parse : function(msg : string) : any {
+        var msgs = msg.match(/^;([^;]+)([;\$])(.*)$/);
+        if (msgs) {
+          var sid = msgs[1];
+          var dlm = msgs[2];
+          var dat = msgs[3];
+          var data : any = null;
+          var lock = new Java.type('java.lang.String')(sid).intern();
+          sync(lock, function() {
+            if (dlm == '$') {
+              data = JSON.parse(buffer[sid] || '{}');
+              delete buffer[sid];
+            } else {
+              buffer[sid] = (buffer[sid] || '') + dat;
+            }
+          });
+          return data;
+        } else {
+          return JSON.parse(msg);
+        }
+      },
+      send : function(send : (msg : string) => void,
+          sid : string, msg : string) {
+        var msgs : string[] = [];
+        while (msg.length > maxLength) {
+          msgs.push(msg.substring(0, maxLength) );
+          msg = msg.substring(maxLength);
+        }
+        if (msgs.length == 0) {
+          send(msg);
+        } else {
+          msgs.push(msg);
+          for (var i = 0; i < msgs.length; i += 1) {
+            send(';' + sid + ';' + msgs[i]);
+          }
+          send(';' + sid + '$');
+        }
+      }
+    }
+  }();
+
   function createWS() {
 
     var actions : any = {};
@@ -122,7 +167,9 @@ namespace wsproj.server {
       var msg = JSON.stringify(data);
       if (arguments.length == 1) {
         sync($session, function() {
-          $session.getBasicRemote().sendText(msg);
+          dataManager.send(function(msg) {
+            $session.getBasicRemote().sendText(msg); },
+            data.sid, msg);
         } );
       } else {
         var sids = getWatchSidList(watchName);
@@ -136,7 +183,9 @@ namespace wsproj.server {
           var session = context.getSession();
           sync(session, function() {
             try {
-              session.getBasicRemote().sendText(msg);
+              dataManager.send(function(msg) {
+                session.getBasicRemote().sendText(msg); },
+                data.sid, msg);
             } catch(e) {
               $global.get('contextMap').remove(sid);
               cleanups.push(sid);
@@ -164,7 +213,10 @@ namespace wsproj.server {
       if (msg.length == 0) {
         return;
       }
-      var data = JSON.parse(msg);
+      var data = dataManager.parse(msg);
+      if (data == null) {
+        return;
+      }
       //console.log(JSON.stringify(data, null, 2) );
       var action = actions[data.action];
       if (action) {

@@ -13,6 +13,48 @@
 
 namespace wsproj.client {
 
+  var dataManager = function() {
+    var buffer : { [ sid : string ] : string } = {};
+    var maxLength = 8000;
+    return {
+      parse : function(msg : string) : any {
+        var msgs = msg.match(/^;([^;]+)([;\$])(.*)$/);
+        if (msgs) {
+          var sid = msgs[1];
+          var dlm = msgs[2];
+          var dat = msgs[3];
+          var data : any = null;
+          if (dlm == '$') {
+            data = JSON.parse(buffer[sid] || '{}');
+            delete buffer[sid];
+          } else {
+            buffer[sid] = (buffer[sid] || '') + dat;
+          }
+          return data;
+        } else {
+          return JSON.parse(msg);
+        }
+      },
+      send : function(send : (msg : string) => void,
+          sid : string, msg : string) {
+        var msgs : string[] = [];
+        while (msg.length > maxLength) {
+          msgs.push(msg.substring(0, maxLength) );
+          msg = msg.substring(maxLength);
+        }
+        if (msgs.length == 0) {
+          send(msg);
+        } else {
+          msgs.push(msg);
+          for (var i = 0; i < msgs.length; i += 1) {
+            send(';' + sid + ';' + msgs[i]);
+          }
+          send(';' + sid + '$');
+        }
+      }
+    }
+  }();
+
   //-------------------------------------------------------
   // create websocket
   //
@@ -20,6 +62,7 @@ namespace wsproj.client {
   export function createWS(url : string) {
 
     var ws : WebSocket = null;
+    var sid : string = null;
 
     var actions : any = {};
 
@@ -37,11 +80,18 @@ namespace wsproj.client {
       }
 
       ws = null;
+      sid = null;
       reopen();
     };
 
     var onmessage = function(event : any) {
-      var data = JSON.parse(event.data);
+      var data = dataManager.parse(event.data);
+      if (data == null) {
+        return;
+      }
+      if (data.action == 'open') {
+        sid = data.sid;
+      }
       console.log(JSON.stringify(data, null, 2) );
       var action = (<any>actions)[data.action];
       if (action) {
@@ -76,7 +126,8 @@ namespace wsproj.client {
       if (ws == null) {
         return;
       }
-      ws.send(JSON.stringify(data) );
+      dataManager.send(function(msg) { ws.send(msg); },
+        sid, JSON.stringify(data) );
     };
 
     var start = function() {
