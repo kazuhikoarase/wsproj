@@ -543,9 +543,47 @@ namespace wsproj.client {
           return Math.max(min, Math.min(strToNum(s), max) );
         };
         if (val.match(/^([0-9]+)$/) ) {
-          var d = parseNum(RegExp.$1, 1, 31);
-          date.setDate(d);
-          return date;
+          if (RegExp.$1.length <= 2) {
+            var d = parseNum(RegExp.$1, 1, 31);
+            date.setDate(d);
+            if (date.getDate() == d) {
+              return date;
+            }
+          } else if (RegExp.$1.length == 4) {
+            var m = parseNum(RegExp.$1.substring(0, 2), 1, 12);
+            var d = parseNum(RegExp.$1.substring(2, 4), 1, 31);
+            date.setMonth(m - 1);
+            date.setDate(d);
+            if (date.getMonth() == m - 1 && date.getDate() == d) {
+              return date;
+            }
+          } else if (RegExp.$1.length == 6) {
+            var y = parseNum(RegExp.$1.substring(0, 4), 2000, 2100);
+            var m = parseNum(RegExp.$1.substring(4, 6), 1, 12);
+            if (!end) {
+              date.setFullYear(y);
+              date.setMonth(m - 1);
+              date.setDate(1);
+            } else {
+              date.setFullYear(y);
+              date.setMonth(m);
+              date.setDate(0);
+            }
+            if (date.getFullYear() == y && date.getMonth() == m - 1) {
+              return date;
+            }
+          } else if (RegExp.$1.length == 8) {
+            var y = parseNum(RegExp.$1.substring(0, 4), 2000, 2100);
+            var m = parseNum(RegExp.$1.substring(4, 6), 1, 12);
+            var d = parseNum(RegExp.$1.substring(6, 8), 1, 31);
+            date.setFullYear(y);
+            date.setMonth(m - 1);
+            date.setDate(d);
+            if (date.getFullYear() == y && date.getMonth() == m - 1 &&
+                date.getDate() == d) {
+              return date;
+            }
+          }
         } else if (val.match(/^([0-9]+)[^0-9]([0-9]+)$/) ) {
           if (RegExp.$1.length == 4) {
             var y = parseNum(RegExp.$1, 2000, 2100);
