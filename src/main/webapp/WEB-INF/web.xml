@@ -35,7 +35,7 @@
           "path": "/ws/wsproj",
           "scriptPath": "/WEB-INF/ts/wsproj-server.js",
           "factory": "wsproj.server.create()"
-        },
+        }
       ]
     }
     </param-value>
