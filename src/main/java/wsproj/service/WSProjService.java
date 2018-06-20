@@ -17,6 +17,79 @@ public class WSProjService {
   private WSProjService() {
   }
 
+  public long getNextTaskId(Connection conn) throws Exception {
+
+    PreparedStatement stmt = conn.prepareStatement(
+        "select next value for SEQ_TASK_ID from DUAL");
+    try {
+      stmt.clearParameters();
+      ResultSet rs = stmt.executeQuery();
+      try {
+        if (!rs.next() ) {
+          throw new IllegalStateException("no sequence");
+        }
+        return updateSequence(conn, "SEQ_TASK_ID", rs.getLong(1) );
+      } finally {
+       rs.close();
+      }
+    } finally {
+      stmt.close();
+    }
+  }
+
+  protected long updateSequence(final Connection conn,
+      final String seq, final long val) throws Exception {
+
+    boolean exists = false;
+    final long[] value = { 0 };
+
+    {
+      PreparedStatement stmt = conn.prepareStatement(
+          "select SEQ_VAL from SEQUENCES where SEQ_ID=? for update");
+      try {
+        stmt.clearParameters();
+        stmt.setString(1, seq);
+        ResultSet rs = stmt.executeQuery();
+        try {
+          if (rs.next() ) {
+            exists = true;
+            value[0] = rs.getLong(1);
+          }
+        } finally {
+         rs.close();
+        }
+      } finally {
+        stmt.close();
+      }
+    }
+
+    if (!exists) {
+      PreparedStatement stmt = conn.prepareStatement(
+          "insert into SEQUENCES (SEQ_ID,SEQ_VAL) values (?,?)");
+      try {
+        stmt.clearParameters();
+        stmt.setString(1, seq);
+        stmt.setLong(2, val);
+        stmt.executeUpdate();
+      } finally {
+        stmt.close();
+      }
+    } else {
+      PreparedStatement stmt = conn.prepareStatement(
+          "update SEQUENCES set SEQ_VAL=? where SEQ_ID=?");
+      try {
+        stmt.clearParameters();
+        stmt.setLong(1, val);
+        stmt.setString(2, seq);
+        stmt.executeUpdate();
+      } finally {
+        stmt.close();
+      }
+    }
+
+    return val;
+  }
+
   public String getUserData(String userId) throws Exception {
     Connection conn = ConnManager.getInstance().getConnection();
     try {

@@ -12,6 +12,7 @@ namespace wsproj.server {
   declare var $session : any;
   declare var $logger : any;
 
+  
   var console = {
     log: function(msg : any) {
       $logger.info(msg);
@@ -290,26 +291,14 @@ namespace wsproj.server {
     }
   }
 
-  function getNextId(conn : any) {
-    var value = 0;
-    var count = executeQuery(conn, 
-      'select next value for SEQ_TASK_ID from DUAL', [], function(rs) {
-        value = +rs.getLong(1);
-        });
-    if (count != 1) {
-      throw 'count:' + count;
-    }
-    return value;
-  }
-
-  function putTask(task : any) {
+  function putTask(service : any, task : any) {
 
     tran(function(conn) {
 
       if (task.id == 0) {
 
         // new data
-        task.id = getNextId(conn);
+        task.id = +service.getNextTaskId(conn);
         executeUpdate(conn, 'insert into TASKS' +
           ' (TASK_ID, PROJECT_ID, DEL_FLG, TERM,' +
           ' USER_ID, MIN_ACT, MAX_ACT, JSON_DATA)' +
@@ -426,7 +415,7 @@ namespace wsproj.server {
       data.task.updUser = user.uid;
       data.task.updDate = time;
 
-      putTask(data.task);
+      putTask(service, data.task);
       ws.send({action: 'updateTask',
         lastTaskId: lastTaskId,
         task: data.task},
