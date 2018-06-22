@@ -18,27 +18,11 @@ public class WSProjService {
   }
 
   public long getNextTaskId(Connection conn) throws Exception {
-
-    PreparedStatement stmt = conn.prepareStatement(
-        "select next value for SEQ_TASK_ID from DUAL");
-    try {
-      stmt.clearParameters();
-      ResultSet rs = stmt.executeQuery();
-      try {
-        if (!rs.next() ) {
-          throw new IllegalStateException("no sequence");
-        }
-        return updateSequence(conn, "SEQ_TASK_ID", rs.getLong(1) );
-      } finally {
-       rs.close();
-      }
-    } finally {
-      stmt.close();
-    }
+    return getNextValue(conn, "SEQ_TASK_ID");
   }
 
-  protected long updateSequence(final Connection conn,
-      final String seq, final long val) throws Exception {
+  protected long getNextValue(final Connection conn,
+      final String seq) throws Exception {
 
     boolean exists = false;
     final long[] value = { 0 };
@@ -63,13 +47,15 @@ public class WSProjService {
       }
     }
 
+    value[0] += 1;
+
     if (!exists) {
       PreparedStatement stmt = conn.prepareStatement(
           "insert into SEQUENCES (SEQ_ID,SEQ_VAL) values (?,?)");
       try {
         stmt.clearParameters();
         stmt.setString(1, seq);
-        stmt.setLong(2, val);
+        stmt.setLong(2, value[0]);
         stmt.executeUpdate();
       } finally {
         stmt.close();
@@ -79,7 +65,7 @@ public class WSProjService {
           "update SEQUENCES set SEQ_VAL=? where SEQ_ID=?");
       try {
         stmt.clearParameters();
-        stmt.setLong(1, val);
+        stmt.setLong(1, value[0]);
         stmt.setString(2, seq);
         stmt.executeUpdate();
       } finally {
@@ -87,7 +73,7 @@ public class WSProjService {
       }
     }
 
-    return val;
+    return value[0];
   }
 
   public String getUserData(String userId) throws Exception {
