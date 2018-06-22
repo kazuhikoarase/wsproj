@@ -379,6 +379,10 @@ namespace wsproj.server {
       ws.send(data);
     };
 
+    ws.actions.alive = function(data : any) {
+      ws.send(data);
+    };
+
     ws.actions.watchTasks = function(data : any) {
       watch(data.projectId);
     };

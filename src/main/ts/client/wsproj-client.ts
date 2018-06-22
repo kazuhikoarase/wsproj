@@ -164,6 +164,22 @@ namespace wsproj.client {
       }
     }
 
+    var alive = false;
+    var heartBeat = function() {
+      setTimeout(function() {
+        if (heartBeat.alive) {
+          ws.send({
+            action: 'alive',
+            uid: opts.uid,
+            uptime: +new Date() - heartBeat.start
+          });
+          heartBeat();
+        }
+      }, 10 * 1000);
+    };
+	heartBeat.alive = false;
+	heartBeat.start = +new Date();
+
     var ws = createWS(opts.url);
 
     ws.actions.open = function(data : any) {
@@ -176,7 +192,11 @@ namespace wsproj.client {
 
     ws.actions.close = function(data : any) {
       onlineStatusUI.setOnline(false);
-    }
+      heartBeat.alive = false;
+    };
+
+    ws.actions.alive = function(data : any) {
+    };
 
     ws.actions.login = function(data : any) {
 
@@ -193,6 +213,8 @@ namespace wsproj.client {
       }
 
       onlineStatusUI.setOnline(true);
+      heartBeat.alive = true;
+      heartBeat();
 
       // projectGroups
       var projectGroups : any[] = [];
