@@ -281,11 +281,7 @@ namespace wsproj.client {
           if (!config) {
             config = createDefaultDataTableConfig();
           }
-          if (!config.rowFilterConfig) {
-            config.rowFilterConfig = createDefaultRowFilterConfig();
-          }
-          updateRowFilter(config.rowFilterConfig);
-          dataTable.setConfig(config);
+          setConfigIndirect(config);
         }();
       } else if (data.key == 'columnWidthConfig') {
         !function() {
@@ -551,15 +547,23 @@ namespace wsproj.client {
         css('top', event.pageY + 'px').
         on('menuItemSelected', function(event, item) {
           if (item.label == messages.CLEAR_FILTER) {
-            dataTable.setConfig(createDataTableConfig() );
+            setConfigIndirect(createDataTableConfig() );
           } else if (item.label == messages.APPLY_DEFAULT_FILTER) {
-            dataTable.setConfig(createDefaultDataTableConfig() );
+            setConfigIndirect(createDefaultDataTableConfig() );
           } else if (item.label == messages.ACT_FILTER) {
             openActFilterView();
           } else if (item.label == messages.OPEN_ADD_UP_VIEW) {
             openAddUpView();
           }
         });
+    }
+
+    function setConfigIndirect(config : any) {
+      if (!config.rowFilterConfig) {
+        config.rowFilterConfig = createDefaultRowFilterConfig();
+      }
+      updateRowFilter(config.rowFilterConfig);
+      dataTable.setConfig(config);
     }
 
     function openActFilterView() {
