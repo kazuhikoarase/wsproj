@@ -164,8 +164,13 @@ namespace wsproj.client {
       }
     }
 
+    interface HeartBeat {
+      () : void;
+      alive : boolean;
+      start : number;
+    }
     var alive = false;
-    var heartBeat = function() {
+    var heartBeat : HeartBeat = <any>function() {
       setTimeout(function() {
         if (heartBeat.alive) {
           ws.send({
@@ -177,8 +182,8 @@ namespace wsproj.client {
         }
       }, 10 * 1000);
     };
-	heartBeat.alive = false;
-	heartBeat.start = +new Date();
+    heartBeat.alive = false;
+    heartBeat.start = +new Date();
 
     var ws = createWS(opts.url);
 
