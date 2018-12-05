@@ -1,9 +1,6 @@
 'use strict';
 namespace wsproj.client {
 
-  function aaa(a : JQueryStatic) {
-  }
-  
   export function createDataTable<T>(
     tableModel : DataTableModel<T>,
     messages : any,
@@ -13,7 +10,7 @@ namespace wsproj.client {
     var tm = createTimer();
 
     var numPageRows = tableModel.numPageRows;
-    var a : number = 0;
+
     var selectedRowIndex = -1;
     var selectedColIndex = -1;
 
