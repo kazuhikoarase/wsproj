@@ -6,7 +6,7 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.eclipse.wst.jsdt.core.javascriptValidator</name>
+			<name>com.palantir.typescript.typeScriptBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
